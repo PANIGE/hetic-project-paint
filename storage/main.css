@@ -1,0 +1,223 @@
+@import url(https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic&subset=latin);
+@font-face { font-family: LemonMilk; font-weight: 100; src: url("/storage/fonts/LemonMilkLight.otf"); }
+@font-face { font-family: LemonMilk; font-weight: 600; src: url("/storage/fonts/LemonMilkRegular.otf"); }
+@font-face { font-family: LemonMilk; font-weight: 700; src: url("/storage/fonts/LemonMilkMedium.otf"); }
+@font-face { font-family: Venera; font-weight: 500; src: url("/storage/fonts/Venera-500.otf"); }
+@font-face { font-family: Torus; font-weight: 100; src: url("/storage/fonts/Torus-Thin.otf"); }
+@font-face { font-family: Torus; font-weight: 600; src: url("/storage/fonts/Torus-SemiBold.otf"); }
+@font-face { font-family: Torus; font-weight: 700; src: url("/storage/fonts/Torus-SemiBold.otf"); }
+@font-face { font-family: Torus; font-weight: 400; src: url("/storage/fonts/Torus-Regular.otf"); }
+@font-face { font-family: Torus; font-weight: 300; src: url("/storage/fonts/Torus-Light.otf"); }
+@font-face { font-family: Torus; font-weight: 900; src: url("/storage/fonts/Torus-Heavy.otf"); }
+@font-face { font-family: Torus; font-weight: 800; src: url("/storage/fonts/Torus-Bold.otf"); }
+
+
+
+body {
+    background: var(--main-bg);
+    margin: 60px;
+}
+
+:root {
+    --main-color: #009CCD;
+    --main-bg: #323232;
+    --segment: #282828;
+    --segment2: #0c0c0c;
+    --header-seconday: #424242;
+    --circle: #C4C4C4;
+  }
+  
+.main-title {
+    font-family: LemonMilk;
+    color: white;
+}
+.main-title span {
+    color: var(--main-color);
+}
+
+.main-container {
+    background: #222;
+    height:1080px;
+    position: relative;
+}
+.header {
+    width: 100%;
+    height: 60px;
+    background: var(--segment);
+    border-bottom: 2px solid var(--main-color);
+    display: flex;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+}
+
+canvas {
+    margin: 20px;
+    background-color: white;
+    cursor: crosshair;
+}
+
+.header-secondary {
+    height: 35px;
+    background-color: var(--header-seconday);
+    display: flex;
+    width: calc(100% - 10px);
+    padding: 5px;
+}
+
+.card {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content:center;
+    
+}
+
+.wrapper {
+    
+    display: flex;
+        
+    flex-direction: column;
+        
+    justify-content: space-between;
+        
+    height: -webkit-fill-available;
+    }
+
+#title {
+    width: 500px;
+    height: 50px;
+    border: none;
+    font-size: 30px;
+    font-family: 'Torus';
+    color: var(--main-color);
+    background: var(--segment);
+    text-align: center;
+    transition: all 100ms ease-in-out;
+}
+#title:focus, #title:active {
+    background: var(--segment2);
+    outline: none;
+    color:white;
+    
+}
+#circle {
+    font-size: 99%;
+    background-color:var(--main-color);
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    margin-right: 5px;
+    border: none;
+    box-shadow: 0 8px 8px 0 rgba(0,0,0,0.2), 0 6px 8px 0 rgba(0,0,0,0.19);
+    transition: color 200ms ease-in-out;
+}
+#circle:hover{
+    cursor:pointer;
+    background-color: white;
+    
+}
+#circle:active{
+    transition-duration: none;
+    background-color: var(--circle);
+    box-shadow: none;
+    transition: color 000ms ease-in-out;
+}
+#import{
+    font-size: 99%;
+    background-color:var(--main-color);
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    border: none;
+    box-shadow: 0 8px 8px 0 rgba(0,0,0,0.2), 0 6px 8px 0 rgba(0,0,0,0.19);
+    transition: color 200ms ease-in-out;
+}
+
+#import:hover{
+    cursor:pointer;
+    background-color: white;
+    
+}
+
+#import:active{
+    transition-duration: none;
+    background-color: var(--circle);
+    box-shadow: none;
+    transition: color 000ms ease-in-out;
+}
+
+.tools {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.tools button {
+    width: 100px;
+    height: 100px;
+    border-radius: 500rem;
+    border:none;
+    background-color: var(--header-seconday);
+    transition: all 100ms ease-in-out;
+}
+
+.tools button:hover {
+    background-color: var(--main-bg);
+}
+
+.tools button i::before {
+    font-size: 40px;
+    color: white;
+}
+
+.tools button.active {
+    border:3px solid var(--main-color);
+    color: var(--main-color);
+    box-shadow: 0 0 10px var(--main-color);
+}
+
+.tools button.active i::before {
+    color: var(--main-color);
+}
+
+
+.tools > div {
+    width: 100px;
+    height: 100px;
+    border-radius: 500rem;
+}
+
+.footer {
+    width: 100%;
+    height: 60px;
+    background: var(--segment);
+    border-top: 2px solid var(--main-color);
+    display: flex;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0;
+}
+
+
+@media screen and (max-width: 1400px){
+    body { 
+        margin: 0px;
+    }
+    .card {
+        flex-direction: column-reverse;
+        width: fit-content;
+    }
+
+    .tools {
+        flex-direction: row;
+    }
+
+    .wrapper {
+    align-items: center;
+    }
+
+    .main-title {
+        text-align: center;
+    }
+}
