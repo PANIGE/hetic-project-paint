@@ -25,41 +25,62 @@
                     </button> 
                 </div>
                 <div>
-                    <button id="import">
-                        <i class="fas fa-file-import"></i></i>
-                    </button>
-                </div>  
-            </div>
-            <div class="card">
-               <div class="workspace">
-                  <canvas id="myCanvas" width="848" height="480" style="border:1px solid black;"></canvas>
+                   <button id="import">
+                      <i class="fas fa-file-import"></i></i>
+                     </button>
+                  </div>  
                </div>
-               <div class="tools">
-                  <div>
-                     <button>
-                     <i class="fas fa-square"></i>
-                     </button>
+               <div class="block">
+                  
+                  <div class="card">
+                     
+                     <div class="workspace">
+                        <canvas id="myCanvas" width="848" height="480" style="border:1px solid black;"></canvas>
+                     </div>
+                     <div class="tools">
+                        
+                        <div>
+                           <button id="bSquare">
+                              <i class="fas fa-square"></i>
+                           </button>
+                        </div>
+                        <div>
+                           <button id="bCircle">
+                              <i class="fas fa-circle"></i>
+                           </button>
+                        </div>
+                        <div>
+                           <button id="bTriangle">
+                              <i class="fas fa-caret-up"></i>
+                           </button>
+                        </div>
+                        
+                        <div>
+                           <button id="bText">
+                              <i class="fas fa-bold"></i>
+                           </button>
+                        </div>
+                        
+                     </div>
                   </div>
-                  <div>
-                     <button>
-                     <i class="fas fa-circle"></i>
-                     </button>
+                  <div class="color-slider">
+                     <div>
+                        <span class="dot" id="primary-prev"></span>
+                     </div>
+                     <div class="slider">
+                        <input type="range" onchange="color()" value="00" min="0" max="255" id="slideR">
+                        <input type="range" onchange="color()" value="00" min="0" max="255" id="slideG">
+                        <input type="range" onchange="color()" value="00" min="0" max="255" id="slideB">
+                     </div>
                   </div>
-                  <div>
-                    <button>
-                    <i class="fas fa-caret-up"></i>
-                    </button>
-                </div>
+               </div>
                <div>
-                  <button>
-                  <i class="fas fa-bold"></i>
-                  </button>
+                  <span class="rgb_container"id="measure"></span>
+               </div>
+               <div class="footer">
+                  </div>
                </div>
             </div>
-         </div>
-         <div class="footer">
-         </div>
-      </div>
-      </div>
-   </body>
-</html>
+         </body>
+         </html>
+         
