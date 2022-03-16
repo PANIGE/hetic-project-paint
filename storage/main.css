@@ -37,7 +37,6 @@ body {
 
 .main-container {
     background: #222;
-    height:1080px;
     position: relative;
 }
 .header {
@@ -51,8 +50,12 @@ body {
     justify-content: center;
 }
 
+.workspace {
+    position: relative;
+    padding:1em
+}
+
 canvas {
-    margin: 20px;
     background-color: white;
     cursor: crosshair;
 }
@@ -65,10 +68,14 @@ canvas {
     padding: 5px;
 }
 .color-slider{
-    max-width: 550px;
+    min-height: 450px;
+    max-height: 600px;
+    width: 100px;
+    max-width: 20%;
     display: flex;
 	flex-direction: column;
     align-content: space-between;
+    justify-content: space-around;
     align-items: center;
 
 }
@@ -80,48 +87,71 @@ canvas {
 
 }
 .slider{
+    min-width: 200px;
     max-height: 200px;
-    max-width: 200px;
+    max-width: 20%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     transform: rotate(-90deg);
 }
+
+.slider .red-value span{
+    background-color: #F00;
+    z-index: 2;
+    line-height: 50px;
+    font-weight: 500;
+    font-family: LemonMilk;
+    color: white;
+}
+
+.slider .red-value span:after{
+
+    content: "";
+    border-radius: 50%;
+    height: 50px;
+    border-top-left-radius: 50%;
+}
+
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    background: var(--circle);
+}
+input[type="range"]:active::-webkit-slider-thumb {
+    box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.1);
+}
+
 input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     height: 30px;
     width: 30px;
     border-radius: 50%;
     background:white;
-    cursor: ew-resize;
+    cursor: pointer;
     transition: background .3s ease-in-out;
-  }
+}
+
 #slideR, #slideG, #slideB{
     
     -webkit-appearance: none;
     border-radius: 50px;
-    margin: 10px 20px 10px 20px;
     outline: 0;
-	border: none;
-    /* border-radius: 50px; */
-    width: 400px;
-	max-width: 600%;
-    /* transition: box-shadow O.2s ease-in-out; */
+    width: 250px;
 }
 
 #slideR{
-    background-color: red;
+    background: linear-gradient(to left,#F00, #000);
     appearance: none;
 }
 
 #slideG{
-    background-color: green;
+    background: linear-gradient(to left,#0F0, #000);
     appearance: none;
 }
 
 #slideB{
-    background-color: blue;
+    background: linear-gradient(to left,#00F, #000);
     appearance: none;
 }
 
@@ -131,14 +161,35 @@ input[type="range"]::-webkit-slider-thumb {
     justify-content:center;
 }
 
+.dotContainer {
+    position:relative;
+}
+.dot2 {
+    /* border: 6px solid var(--header-seconday); */
+    height: 100px;
+    width: 100px;
+    background-color: rgb(255, 255, 255);
+    border-radius: 50%;
+    display: inline-block;
+    position:absolute;
+    top:-25px;
+    right:-25px;
+    z-index: 0;
+  }
+
 .dot {
-    margin-bottom: 300%;
+    /* border: 6px solid var(--header-seconday); */
     height: 100px;
     width: 100px;
     background-color: rgb(0, 0, 0);
     border-radius: 50%;
     display: inline-block;
+    position:relative;
+    z-index: 1;
   }
+.dot:hover{
+    box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.1);
+}
 .wrapper {
     
     display: flex;
@@ -263,11 +314,47 @@ input[type="range"]::-webkit-slider-thumb {
     border-top: 2px solid var(--main-color);
     display: flex;
     align-content: center;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 0;
+} 
+
+.dropdown{
+    color:var(--main-color);
+    width:50px;
+    position: absolute;
+    margin-left:95%;
 }
 
+.dropdown:hover .dropbtn {
+    background-color: white;
+}
+
+.dropdown:hover .conteneur {
+    display: inline-block  ;
+}
+
+.dropbtn {
+    background-color: var(--main-color);
+    color: black;
+    border-radius: 5%;
+    font-family:"Torus";
+    padding: 5px;
+    font-size: 20px;
+    border: none;
+}
+
+.conteneur{
+    display: none;
+    background-color: var(--header-seconday);
+    border-radius: 5%;
+    padding: 10px;
+    font-family:"Torus";
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+}
+
+.conteneur p:hover {
+    margin-right: 20px;
+    margin-left: 20px;
+    background-color:var(--main-bg);
+}
 
 @media screen and (max-width: 1400px){
     body { 
@@ -280,6 +367,7 @@ input[type="range"]::-webkit-slider-thumb {
 
     .tools {
         flex-direction: row;
+        margin-top: 1em;
     }
 
     .wrapper {
@@ -289,4 +377,34 @@ input[type="range"]::-webkit-slider-thumb {
     .main-title {
         text-align: center;
     }
+
+    .dropdown{
+        margin-left:90%;
+    }
+}
+
+
+.selectionBox div {
+    position: absolute;
+    top: 0;
+    border: 2px dashed black;
+    cursor:grab;
+}
+.selectionBox {
+    position:relative;
+    width: 0;
+    height: 0;
+    float: left;
+    z-index: 9;
+}
+
+.selectionBox div:before {
+    content:"";
+    position:absolute;
+    width:20px;
+    height:20px;
+    right:-13px;
+    bottom:-13px;
+    cursor:se-resize;
+   
 }

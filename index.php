@@ -28,13 +28,22 @@
                    <button id="import">
                       <i class="fas fa-file-import"></i></i>
                      </button>
-                  </div>  
+                </div>
+                <div class="dropdown">
+                  <button class="dropbtn">font</button>
+                  <div class="conteneur">
+                        <p >police1</p>
+                        <p >police2</p>
+                        <p >police3</p>
+                     </div>  
+                  </div>
                </div>
                <div class="block">
                   
                   <div class="card">
                      
                      <div class="workspace">
+                        <div class="selectionBox"><div id="selection" style="opacity: 0;width:0;height:0;top:0;left:0;"></div></div>
                         <canvas id="myCanvas" width="848" height="480" style="border:1px solid black;"></canvas>
                      </div>
                      <div class="tools">
@@ -53,8 +62,7 @@
                            <button id="bTriangle">
                               <i class="fas fa-caret-up"></i>
                            </button>
-                        </div>
-                        
+                        </div>          
                         <div>
                            <button id="bText">
                               <i class="fas fa-bold"></i>
@@ -64,23 +72,36 @@
                      </div>
                   </div>
                   <div class="color-slider">
-                     <div>
-                        <span class="dot" id="primary-prev"></span>
+                     <div class="dotContainer">
+                        <span class="dot" id="primary-prev" onclick="ExchangeColors()"></span>
+                        <span class="dot2" id="secondary-prev"></span>
                      </div>
                      <div class="slider">
-                        <input type="range" onchange="color()" value="00" min="0" max="255" id="slideR">
-                        <input type="range" onchange="color()" value="00" min="0" max="255" id="slideG">
-                        <input type="range" onchange="color()" value="00" min="0" max="255" id="slideB">
+                        <div class="red-value">
+                           <span>0</span>
+                           <input type="range" onchange="color()" value="00" min="0" max="255" id="slideR">
+                        </div>
+                        <div class="green-value">
+                           <span>0</span>
+                           <input type="range" onchange="color()" value="00" min="0" max="255" id="slideG">
+                        </div>
+                        <div class="blue-value">
+                           <span>0</span>
+                           <input type="range" onchange="color()" value="00" min="0" max="255" id="slideB">
+                        </div>
                      </div>
                   </div>
                </div>
                <div>
                   <span class="rgb_container"id="measure"></span>
                </div>
+                  </div>
+               </div>
                <div class="footer">
                   </div>
                </div>
             </div>
+            
          </body>
          </html>
          
