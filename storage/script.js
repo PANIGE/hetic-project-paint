@@ -4,63 +4,46 @@ var currentTool = 0;
 // 1 = round
 // 2 = triangles
 // 3 = text
+
+//Thoses are buttons
 var bCircle;
 var bSquare;
 var bTriangle;
 var bText;
 
+//Thoses are colors
 var PrimaryColor = "#000";
 var SecondaryColor = "#FFF";
-var Selected = NaN; // ID of the selected element
-
 var canChangeColors = true; //This var is here just to avoid the sliders to calls colors when i'm updating thoses
+
+// ID of the selected element
+var Selected = NaN; 
+
+
+
+var Font = "Arial";
+var rgb = false;
+hueval = 0;
+
+
+var draggingFirstPos = {
+    "X": NaN,
+    "Y": NaN,
+    "ElX" : NaN,
+    "ElY": NaN,
+}
 
 var elements = [
     {
         "ID":1,
-        "Type":0,
-        "X":0.1,
-        "Y":0.05,
+        "Type":1,
+        "X":-1,
+        "Y":-1,
         "Height":0.2,
         "Width":0.2,
         "PrimaryColor":"#F0F",
         "SecondaryColor":"#0F0",
     },
-    {
-        "ID":2,
-        "Type":1,
-        "X":0.7,
-        "Y":0.05,
-        "Height":0.2,
-        "Width":0.2,
-        "PrimaryColor":"#00F",
-        "SecondaryColor":"#FF0",
-    },
-    
-    {
-        "ID":3,
-        "Type":2,
-        "X":0.1,
-        "Y":0.3,
-        "Height":0.2,
-        "Width":0.2,
-        "PrimaryColor":"#0F0",
-        "SecondaryColor":"#F0F",
-    },
-    
-    {
-        "ID":4,
-        "Type":3,
-        "X":0.6,
-        "Y":0.4,
-        "Height":0.07,
-        "Width":0.02, 
-        "PrimaryColor":"#F00",
-        "SecondaryColor":"#000",
-        "Font": "Arial",
-        "Text": "AAAAAAA"
-    },
-
 ];
 //This is a List of Dictionnary
 //Dicts are represented like this :
@@ -89,10 +72,10 @@ window.onload = () => {
     bTriangle = document.getElementById("bTriangle");
     bText = document.getElementById("bText");
 
-    bSquare.onclick = () => changeTool(0);
-    bCircle.onclick = () => changeTool(1);
-    bTriangle.onclick = () => changeTool(2);
-    bText.onclick = () => changeTool(3);
+    bSquare.onclick = () => CreateElement(0);
+    bCircle.onclick = () => CreateElement(1);
+    bTriangle.onclick = () => CreateElement(2);
+    bText.onclick = () => CreateElement(3);
     
     //EndRegion
 
@@ -116,7 +99,153 @@ window.onload = () => {
     canvas.addEventListener("click", (e) => CanvasClick(e));
 
     let selectionBox = document.getElementById("selection");
-    selectionBox.addEventListener("drag", e)
+    selectionBox.addEventListener("drag", (e) => CanvasDrag(e));
+    selectionBox.addEventListener("dragenter", (e) => CanvasDragStart(e));
+    selectionBox.addEventListener("dragend", (e) => CanvasDragEnd(e));
+
+
+    let Resize = document.getElementById("resize");
+    Resize.addEventListener("drag", (e) => ResizeDrag(e));
+    Resize.addEventListener("dragenter", (e) => ResizeDragStart(e));
+    Resize.addEventListener("dragend", (e) => ResizeDragEnd(e));
+
+
+    document.getElementById("file-input").addEventListener('change', load);
+
+    document.onkeydown = function(e){
+        var key = e.key;
+        if( (e.which == 8 || e.which == 46) && !isNaN(Selected) ) { //i know this is deprecated but the doc wont give me any replacement...
+            elements.splice(elements.indexOf(getElementByID(Selected)),1);
+            Select(-1);
+        }
+    };
+    
+
+}
+function font(FontName){
+    Font = FontName;    
+}
+function colors(){
+    rgb = !rgb;
+}
+
+function download(){
+    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(save());
+    var DocName = document.getElementById('title')
+    var dlAnchorElem = document.getElementById('downloader');
+    dlAnchorElem.setAttribute("href",dataStr);
+    dlAnchorElem.setAttribute("download", DocName.value + '.json');
+    dlAnchorElem.click();
+}
+
+function ResizeDragStart(e) {
+    e.stopPropagation();
+    if (!isNaN(draggingFirstPos.X))
+        return;
+    let canvas = document.getElementById('myCanvas');
+    var cRect = canvas.getBoundingClientRect();        // Gets CSS pos, and width/height
+    var curX = Math.round(e.clientX - cRect.left) / canvas.width;  // Subtract the 'left' of the canvas 
+    var curY = Math.round(e.clientY - cRect.top) / canvas.width; 
+    draggingFirstPos = {
+        "X": curX,
+        "Y": curY,
+        "ElX" : getElementByID(Selected).Width,
+        "ElY" : getElementByID(Selected).Height
+    }
+
+    node = document.getElementById("selection");
+    node.style.opacity = 0;
+}
+function ResizeDrag(e) {
+    e.stopPropagation();
+    if (isNaN(draggingFirstPos.X))
+    return;
+    let canvas = document.getElementById('myCanvas');
+    var cRect = canvas.getBoundingClientRect();        // Gets CSS pos, and width/height
+    var curX = Math.round(e.clientX - cRect.left) / canvas.width;  // Subtract the 'left' of the canvas 
+    var curY = Math.round(e.clientY - cRect.top) / canvas.width; 
+    el = getElementByID(Selected);
+    el.Width = draggingFirstPos.ElX + (curX - draggingFirstPos.X);
+    el.Height = draggingFirstPos.ElY + (curY - draggingFirstPos.Y);
+
+    node = document.getElementById("selection");
+    node.style.width = Math.floor(el["Width"]*canvas.width)+12 + "px";
+    node.style.height = Math.floor(el["Height"]*canvas.width)+12+ "px";
+}
+function ResizeDragEnd(e) {
+    e.stopPropagation();
+    let canvas = document.getElementById('myCanvas');
+    var cRect = canvas.getBoundingClientRect();   
+    var curX = Math.round(e.clientX - cRect.left) / canvas.width;  // Subtract the 'left' of the canvas 
+    var curY = Math.round(e.clientY - cRect.top) / canvas.width; 
+    node = document.getElementById("selection");
+    
+    node.style.opacity = 1;
+    node.style.width = Math.floor(el["Width"]*canvas.width)-6+ "px";
+    node.style.height = Math.floor(el["Height"]*canvas.width)-6+ "px";
+
+    el = getElementByID(Selected);
+    el.Width = draggingFirstPos.ElX + (curX - draggingFirstPos.X);
+    el.Height = draggingFirstPos.ElY + (curY - draggingFirstPos.Y);
+
+    draggingFirstRes = {
+        "X": NaN,
+        "Y": NaN,
+        "ElX" : NaN,
+        "ElY": NaN,
+    }
+}
+
+function CanvasDragStart(e) {
+    if (!isNaN(draggingFirstPos.X))
+        return;
+    let canvas = document.getElementById('myCanvas');
+    var cRect = canvas.getBoundingClientRect();        // Gets CSS pos, and width/height
+    var curX = Math.round(e.clientX - cRect.left) / canvas.width;  // Subtract the 'left' of the canvas 
+    var curY = Math.round(e.clientY - cRect.top) / canvas.width; 
+    draggingFirstPos = {
+        "X": curX,
+        "Y": curY,
+        "ElX" : getElementByID(Selected).X,
+        "ElY" : getElementByID(Selected).Y
+    }
+
+    node = document.getElementById("selection");
+    node.style.opacity = 0;
+
+}
+function CanvasDrag(e) {
+    if (isNaN(draggingFirstPos.X))
+        return;
+    let canvas = document.getElementById('myCanvas');
+    var cRect = canvas.getBoundingClientRect();        // Gets CSS pos, and width/height
+    var curX = Math.round(e.clientX - cRect.left) / canvas.width;  // Subtract the 'left' of the canvas 
+    var curY = Math.round(e.clientY - cRect.top) / canvas.width; 
+    getElementByID(Selected).X = draggingFirstPos.ElX + (curX - draggingFirstPos.X);
+    getElementByID(Selected).Y = draggingFirstPos.ElY + (curY - draggingFirstPos.Y);
+
+    node = document.getElementById("selection");
+
+}
+function CanvasDragEnd(e) {
+    let canvas = document.getElementById('myCanvas');
+    var cRect = canvas.getBoundingClientRect();        // Gets CSS pos, and width/height
+    var curX = Math.round(e.clientX - cRect.left) / canvas.width;  // Subtract the 'left' of the canvas 
+    var curY = Math.round(e.clientY - cRect.top) / canvas.width; 
+    el = getElementByID(Selected);
+    el.X = draggingFirstPos.ElX + (curX - draggingFirstPos.X);
+    el.Y = draggingFirstPos.ElY + (curY - draggingFirstPos.Y);
+
+    node = document.getElementById("selection");
+    node.style.opacity = 1;
+    node.style.top = Math.floor(el["Y"]*canvas.width)-6+ "px";
+    node.style.left = Math.floor(el["X"]*canvas.width)-6+ "px";
+    draggingFirstPos = {
+        "X": NaN,
+        "Y": NaN,
+        "ElX" : NaN,
+        "ElY": NaN,
+    }
 }
 
 function CanvasClick(e) 
@@ -133,10 +262,6 @@ function CanvasClick(e)
         let endX = el.X + el.Width;
         let endY = el.Y + el.Height;
 
-        console.log(curX + " > " + x);
-        console.log(curX + " < " + endX);
-        console.log(curY + " > " + x);
-        console.log(curY + " < " + x);
         if (curX > x && curX < endX && curY > y && curY < endY) {
             Select(el.ID);
             return;
@@ -147,28 +272,34 @@ function CanvasClick(e)
 
 
 
-function changeTool(tool) 
+function CreateElement(tool) 
 {
-    [bCircle, bSquare, bTriangle, bText].forEach(s => s.classList.remove("active"));
-    switch (tool) {
-        case 0:
-            currentTool = 0;
-            bSquare.classList.add("active")
-            break;
-        case 1:
-            currentTool = 1;
-            bCircle.classList.add("active")
-            break;
-        case 2:
-            currentTool = 2;
-            bTriangle.classList.add("active")
-            break;
-        case 3:
-            currentTool = 3;
-            bText.classList.add("active")
-            break;
-
+    let id;
+    console.log(elements.length === 0)
+    if (elements.length !== 0) {
+        id = Math.max.apply(Math, elements.map(function(o) { return o.ID; }))+1;
     }
+    else {
+        id = 1;
+    }
+    
+    console.log(id)
+    el = {
+    "ID":id,
+    "Type":tool,
+    "X":0.4,
+    "Y":0.4,
+    "Height":0.2,
+    "Width":0.2,
+    "PrimaryColor":PrimaryColor,
+    "SecondaryColor":SecondaryColor,
+    }
+    if (tool == 3) {
+        el["Font"]= Font,
+        el["Text"]= prompt("Enter text") 
+    }
+    elements.push(el);
+    Select(id);
 }
 
 
@@ -216,6 +347,16 @@ function color()
     let green = document.getElementById('slideG');
     let blue = document.getElementById('slideB');
 
+    var r = document.getElementById('rValue');
+    r.innerHTML = red.value;
+
+    var g = document.getElementById('gValue');
+    g.innerHTML = green.value;
+
+    var b = document.getElementById('bValue');
+    b.innerHTML = blue.value;
+
+
     let hexR = parseInt(red.value).toString(16);
     let hexG = parseInt(green.value).toString(16);
     let hexB = parseInt(blue.value).toString(16);
@@ -258,7 +399,6 @@ function Select(id)
     }
     Selected = id;
     node = document.getElementById("selection");
-    console.log(el["Width"]*canvas.width);
     node.style.opacity = 1;
     node.style.width = Math.floor(el["Width"]*canvas.width)+12 + "px";
     node.style.height = Math.floor(el["Height"]*canvas.width)+12+ "px";
@@ -280,8 +420,34 @@ function getElementByID(id)
     return null;
 }
 
+function save() {
+    return JSON.stringify(elements)
+}
+
+function load() {
+    
+    if (typeof window.FileReader !== 'function') {
+        alert("loading files isn't supported on this browser yet.");
+        return;
+    }
+    let input = document.getElementById('file-input');
+
+
+    var fr=new FileReader();
+    fr.onload=function(){
+        
+        elements = JSON.parse(fr.result);
+        console.log(elements);
+    }
+    fr.readAsText(input.files[0])
+}
+
 function draws()
 {
+    if (rgb) {
+        document.documentElement.style.setProperty('--main-color', 'hsl('+hueval+', 100%, 40%)');
+        hueval++;
+    }
     var canvas = document.getElementById('myCanvas');
     var ctx = canvas.getContext('2d');
     ctx.lineWidth = 10;
@@ -327,13 +493,23 @@ function draws()
                 break;
     
             case 3:
-                
                 ctx.font = Math.floor(s["Height"]*canvas.width) + "px " + s["Font"];//"30px Arial";
-                ctx.fillText(s["Text"], s["X"]*canvas.width, s["Y"]*canvas.width);
+                s.Width = ctx.measureText(s["Text"]).width / canvas.width;
+                ctx.fillStyle = s.SecondaryColor;
+                ctx.rect(s["X"]*canvas.width, s["Y"]*canvas.width, s["Width"]*canvas.width, s["Height"]*canvas.width);
+                
+                ctx.fill();
+                ctx.fillStyle = s.PrimaryColor;
+                ctx.fillText(s["Text"], s["X"]*canvas.width, (s["Y"]+s["Height"])*canvas.width);
+
+                ctx.strokeStyle = s["PrimaryColor"];
+                ctx.fillStyle = s["SecondaryColor"];
+                break;
+            default:
+                console.error("Unknown type "+s.Type)
                 break;
         }
     });
     
 
 }
-

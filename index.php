@@ -20,21 +20,28 @@
          <div class="wrapper">
             <div class="header-secondary">
                 <div>
-                    <button id="circle">
+                    <button id="circle" onclick="download()">
                     <i class="fas fa-save"></i>
                     </button> 
                 </div>
                 <div>
-                   <button id="import">
+                   <button id="import" onclick="document.getElementById('file-input').click();">
                       <i class="fas fa-file-import"></i></i>
+                      <input id="file-input" type="file" name="file" style="display: none;" />
                      </button>
+                </div>
+                <div>
+                   <button onclick="colors()"id="rgb">
+                     <i class="fas fa-palette"></i>
+                   </button>
                 </div>
                 <div class="dropdown">
                   <button class="dropbtn">font</button>
                   <div class="conteneur">
-                        <p >police1</p>
-                        <p >police2</p>
-                        <p >police3</p>
+                        <p onclick="font('Roboto')">Roboto</p>
+                        <p onclick="font('Inspiration')">Inpiration</p>
+                        <p onclick="font('Torus')">Torus</p>
+                        <p onclick="font('Noto Sans Japanese')">Noto Sans Japanese</p>
                      </div>  
                   </div>
                </div>
@@ -43,7 +50,7 @@
                   <div class="card">
                      
                      <div class="workspace">
-                        <div class="selectionBox"><div id="selection" style="opacity: 0;width:0;height:0;top:0;left:0;"></div></div>
+                        <div  class="selectionBox"><div draggable="true" id="selection" style="opacity:0;width:0;height:0;top:0;left:0;"><span id="resize" draggable="true"></span></div></div>
                         <canvas id="myCanvas" width="848" height="480" style="border:1px solid black;"></canvas>
                      </div>
                      <div class="tools">
@@ -78,19 +85,24 @@
                      </div>
                      <div class="slider">
                         <div class="red-value">
-                           <span>0</span>
+                           <div id="rValue">0</div>
                            <input type="range" onchange="color()" value="00" min="0" max="255" id="slideR">
                         </div>
                         <div class="green-value">
-                           <span>0</span>
+                           <div id="gValue">0</div>
                            <input type="range" onchange="color()" value="00" min="0" max="255" id="slideG">
                         </div>
                         <div class="blue-value">
-                           <span>0</span>
+                           <div id="bValue">0</div>
                            <input type="range" onchange="color()" value="00" min="0" max="255" id="slideB">
                         </div>
+                        <script>
+                           var slider = document.getElementById("slider");
+                           // var selector = document.getElementById("selector")
+                        </script>
+                        </div>
+                        <a id="downloader" style="display:hidden;"></a>
                      </div>
-                  </div>
                </div>
                <div>
                   <span class="rgb_container"id="measure"></span>
