@@ -69,6 +69,7 @@ canvas {
     width: calc(100% - 10px);
     padding: 5px;
 }
+
 .color-slider{
     min-height: 450px;
     max-height: 600px;
@@ -86,8 +87,8 @@ canvas {
     display: flex;
     align-items: center;
     justify-content: center;
-
 }
+
 .slider{
     min-width: 200px;
     max-height: 200px;
@@ -109,25 +110,40 @@ canvas {
     text-align: center;
     margin-right: 20px;
     font-family: LemonMilk;
+    color: var(--main-color);
     font-size: large;
     transform: rotate(90deg);
-    background-color: #ff4b4b;
+    background-color: white;
     width: 35px;
-    height: 35px;
-    border-radius: 50%;
+    height: 30px;
+    padding-top: 6px;
+    border-radius: 20% 0 0 20%;
 }
+.slider .red-value #rValue:hover{ 
+    cursor: default;
+    background: var(--circle)
+
+}
+
 .slider .green-value{
     display: flex;
     align-content: space-between;
 }
 .slider .green-value #gValue{
     text-align: center;
+    margin-right: 20px;
     font-family: LemonMilk;
+    color: var(--main-color);   
     font-size: large;
     transform: rotate(90deg);
-    background-color: #00ff00;
-    width: 30px;
-    height: 20px;
+    background-color:white;
+    width: 35px;
+    height: 30px;
+    padding-top: 6px;
+}
+.slider .green-value #gValue:hover{
+    cursor: default;
+    background: var(--circle)
 }
 .slider .blue-value{
     display: flex;
@@ -135,13 +151,20 @@ canvas {
 }
 .slider .blue-value #bValue{
     text-align: center;
+    margin-right: 20px;
     font-family: LemonMilk;
+    color: var(--main-color);
     font-size: large;
     transform: rotate(90deg);
-    background-color: #7070ff;
-    width: 30px;
-    height: 20px;
-    border-radius: 0 5em 5em 0;
+    background-color: white;
+    width: 35px;
+    height: 30px;
+    padding-top: 6px;
+    border-radius: 0 20% 20% 0;
+}
+.slider .blue-value #bValue:hover{
+    cursor: default;
+    background: var(--circle) 
 }
 
 input[type="range"]::-webkit-slider-thumb:hover {
@@ -153,8 +176,8 @@ input[type="range"]:active::-webkit-slider-thumb {
 
 input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
-    height: 30px;
-    width: 30px;
+    height: 35px;
+    width: 35px;
     border-radius: 50%;
     background:white;
     cursor: pointer;
@@ -194,6 +217,7 @@ input[type="range"]::-webkit-slider-thumb {
 
 .dotContainer {
     position:relative;
+    margin-bottom: 15%;
 }
 .dot2 {
     /* border: 6px solid var(--header-seconday); */

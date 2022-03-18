@@ -1,3 +1,10 @@
+<?php
+$dsn = 'mysql:host=localhost;dbname=sys;port=3306';
+$pdo = new PDO($dsn, 'root' , 'Pikachu2003!');
+$query = $pdo->query("SELECT manga FROM ID");
+$resultat = $query->fetchAll();
+var_dump($resultat);
+?>
 <!DOCTYPE html>
 <html lang="en">
    <head>
@@ -98,7 +105,6 @@
                         </div>
                         <script>
                            var slider = document.getElementById("slider");
-                           // var selector = document.getElementById("selector")
                         </script>
                         </div>
                         <a id="downloader" style="display:hidden;"></a>

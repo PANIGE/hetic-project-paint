@@ -125,13 +125,35 @@ window.onload = () => {
 function font(FontName){
     Font = FontName;    
 }
+
 function colors(){
     rgb = !rgb;
 }
 
+function drawForExport() {
+    var canvas = document.getElementById('myCanvas');
+    var ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#FFF"
+    ctx.rect(0, 0, canvas.width, canvas.height);
+    ctx.fill();
+    draws(false);
+    jgp();
+}
+
+/*function jgp(){
+    var canvas =document.getElementById('myCanvas');
+    var image = canvas.toDataURL();
+    var aDownloadLink = document.getElementById('downloader');
+    var DocName = document.getElementById('title');
+    aDownloadLink.download = DocName.value + '.png';
+    aDownloadLink.href = image;
+    aDownloadLink.click();*/
+// }
+    
 function download(){
     var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(save());
-    var DocName = document.getElementById('title')
+    var DocName = document.getElementById('title');
     var dlAnchorElem = document.getElementById('downloader');
     dlAnchorElem.setAttribute("href",dataStr);
     dlAnchorElem.setAttribute("download", DocName.value + '.json');
@@ -442,7 +464,7 @@ function load() {
     fr.readAsText(input.files[0])
 }
 
-function draws()
+function draws(clear = true)
 {
     if (rgb) {
         document.documentElement.style.setProperty('--main-color', 'hsl('+hueval+', 100%, 40%)');
@@ -451,7 +473,8 @@ function draws()
     var canvas = document.getElementById('myCanvas');
     var ctx = canvas.getContext('2d');
     ctx.lineWidth = 10;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (clear)
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
     elements.forEach(s => {
         ctx.strokeStyle = s["PrimaryColor"];
         ctx.fillStyle = s["SecondaryColor"];
@@ -510,6 +533,8 @@ function draws()
                 break;
         }
     });
-    
 
 }
+
+
+
