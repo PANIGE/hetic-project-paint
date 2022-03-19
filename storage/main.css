@@ -319,6 +319,27 @@ justify-content: space-between;
     transition: color 000ms ease-in-out;
 }
 
+#png{
+    font-size: 99%;
+    background-color:var(--main-color);
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    border: none;
+    box-shadow: 0 8px 8px 0 rgba(0,0,0,0.2), 0 6px 8px 0 rgba(0,0,0,0.19);
+    transition: color 200ms ease-in-out;
+}
+#png:hover{
+    cursor:pointer;
+    background-color: white;
+}
+#png:active{
+    transition-duration: none;
+    background-color: var(--circle);
+    box-shadow: none;
+    transition: color 000ms ease-in-out;
+}
+
 #import{
     font-size: 99%;
     background-color:var(--main-color);

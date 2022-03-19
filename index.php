@@ -1,9 +1,26 @@
 <?php
-$dsn = 'mysql:host=localhost;dbname=sys;port=3306';
-$pdo = new PDO($dsn, 'root' , 'Pikachu2003!');
-$query = $pdo->query("SELECT manga FROM ID");
-$resultat = $query->fetchAll();
-var_dump($resultat);
+require_once("include/SQL.php");
+$json = "[]";
+$name = "Sans-Titre";
+if (isset($_GET['name'])) {
+   $name = $_GET['name']; 
+   $IP = $_SERVER['REMOTE_ADDR'];
+   $req = $pdo->prepare("SELECT json FROM save WHERE ip = :ip AND name = :name");
+   $req->execute([
+      ":ip" => $IP,
+      ":name" => $name
+   ]);
+   $result = $req->fetch(PDO::FETCH_ASSOC);
+   if ($result) {
+      $json = $result["json"];
+      $name = $_GET["name"];
+   }
+   else {
+      echo '<script>alert("Nom non trouvé dans votre base de donnée")</script>';
+   }
+}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,22 +39,42 @@ var_dump($resultat);
       </div>
       <div class="main-container">
          <div class="header">
-            <input type="text" value="Sans Titre" placeholder="Art Name" id="title">
+            <input type="text" value=<?= $name ?> placeholder="Art Name" id="title">
          </div>
          <div class="wrapper">
             <div class="header-secondary">
-                <div>
-                    <button id="circle" onclick="download()">
+                <div title="Download the file locally">
+                    <button id="circle" onclick="downloadFile()">
+                    <i class="fas fa-download"></i>
+                    </button> 
+                </div>
+                <div title="Save file to the server (Be sure to remember the name !)">
+                    <button id="circle" onclick="download()" >
                     <i class="fas fa-save"></i>
                     </button> 
                 </div>
-                <div>
-                   <button id="import" onclick="document.getElementById('file-input').click();">
-                      <i class="fas fa-file-import"></i></i>
+                <div title="Download file locally">
+                   <button id="circle" id="import" onclick="load()">
+                   <i class="fas fa-cloud-download-alt"></i>
+                  </button>
+                </div>
+                <div title="Get a file locally">
+                   <button id="circle" onclick="document.getElementById('file-input').click();">
+                   <i class="fas fa-cloud-upload-alt"></i>
                       <input id="file-input" type="file" name="file" style="display: none;" />
                      </button>
                 </div>
-                <div>
+                <div title="Export to PNG">
+                   <button id="circle" >
+                     <i class="fas fa-file-image"></i>
+                   </button>
+                </div>
+                <div  title="Export to PDF">
+                   <button id="circle" >
+                     <i class="fas fa-file-pdf"></i>
+                   </button>
+                </div>
+                <div  title="Who wouldn't have some RGB ?">
                    <button onclick="colors()"id="rgb">
                      <i class="fas fa-palette"></i>
                    </button>
@@ -103,9 +140,7 @@ var_dump($resultat);
                            <div id="bValue">0</div>
                            <input type="range" onchange="color()" value="00" min="0" max="255" id="slideB">
                         </div>
-                        <script>
-                           var slider = document.getElementById("slider");
-                        </script>
+  
                         </div>
                         <a id="downloader" style="display:hidden;"></a>
                      </div>
@@ -121,5 +156,6 @@ var_dump($resultat);
             </div>
             
          </body>
+         <script type="text/javascript">elements=<?= $json ?></script>
          </html>
          

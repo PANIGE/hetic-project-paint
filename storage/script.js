@@ -110,7 +110,7 @@ window.onload = () => {
     Resize.addEventListener("dragend", (e) => ResizeDragEnd(e));
 
 
-    document.getElementById("file-input").addEventListener('change', load);
+    document.getElementById("file-input").addEventListener('change', upload);
 
     document.onkeydown = function(e){
         var key = e.key;
@@ -141,7 +141,8 @@ function drawForExport() {
     jgp();
 }
 
-/*function jgp(){
+/*save jpg front
+function jgp(){
     var canvas =document.getElementById('myCanvas');
     var image = canvas.toDataURL();
     var aDownloadLink = document.getElementById('downloader');
@@ -150,14 +151,34 @@ function drawForExport() {
     aDownloadLink.href = image;
     aDownloadLink.click();*/
 // }
+
+
+
+function downloadFile(){
     
-function download(){
     var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(save());
     var DocName = document.getElementById('title');
     var dlAnchorElem = document.getElementById('downloader');
     dlAnchorElem.setAttribute("href",dataStr);
     dlAnchorElem.setAttribute("download", DocName.value + '.json');
     dlAnchorElem.click();
+}
+
+function download(){
+    var XHR = new XMLHttpRequest();
+    var DocName = document.getElementById('title');
+    
+    urlEncodedData = encodeURIComponent("JSON") + '=' + encodeURIComponent(save()) + "&NAME=" + encodeURIComponent(DocName.value).replace(/%20/g, '+');
+    XHR.open('POST', '/submit.php');
+    XHR.addEventListener('load', function(event) {
+        alert('Données sauvegardées');
+      });
+    XHR.addEventListener('error', function(event) {
+        alert('Sauvegardé échouée');
+      })
+    //JSON = tonjson
+    XHR.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');//Juste pour que PHP comprennent ce qu'on vien d'écrire
+    XHR.send(urlEncodedData);
 }
 
 function ResizeDragStart(e) {
@@ -217,6 +238,9 @@ function ResizeDragEnd(e) {
         "ElY": NaN,
     }
 }
+
+//GET : Toi qui demande une page
+//POST : Tu appui sur un bouton login => envoie des données aux serveur
 
 function CanvasDragStart(e) {
     if (!isNaN(draggingFirstPos.X))
@@ -446,7 +470,7 @@ function save() {
     return JSON.stringify(elements)
 }
 
-function load() {
+function upload() {
     
     if (typeof window.FileReader !== 'function') {
         alert("loading files isn't supported on this browser yet.");
@@ -462,6 +486,11 @@ function load() {
         console.log(elements);
     }
     fr.readAsText(input.files[0])
+}
+
+function load() {
+    let name = prompt("Le nom de votre document");
+    window.location.replace("/?name="+name);
 }
 
 function draws(clear = true)
