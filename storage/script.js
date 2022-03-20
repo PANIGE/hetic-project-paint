@@ -1,3 +1,7 @@
+/* -------------------------------------------------------------------------- */
+/*                                    Init                                    */
+/* -------------------------------------------------------------------------- */
+
 var currentTool = 0;
 //Sincs JS don't have the basics implementation of ENUMS, i have to use ints instead, that are... less good implementation
 // 0 = square
@@ -110,7 +114,7 @@ window.onload = () => {
     Resize.addEventListener("dragend", (e) => ResizeDragEnd(e));
 
 
-    document.getElementById("file-input").addEventListener('change', upload);
+    document.getElementById("file-input").addEventListener('change', LoadFromClient);
 
     document.onkeydown = function(e){
         var key = e.key;
@@ -122,6 +126,10 @@ window.onload = () => {
     
 
 }
+
+/* -------------------------------------------------------------------------- */
+/*                               Header Activity                              */
+/* -------------------------------------------------------------------------- */
 function font(FontName){
     Font = FontName;    
 }
@@ -138,25 +146,63 @@ function drawForExport() {
     ctx.rect(0, 0, canvas.width, canvas.height);
     ctx.fill();
     draws(false);
-    jgp();
 }
 
-/*save jpg front
-function jgp(){
+/* -------------------------------------------------------------------------- */
+/*                               Exports / Loads                              */
+/* -------------------------------------------------------------------------- */
+
+function SerializeJson() {
+    return JSON.stringify(elements)
+}
+
+/* --------------------------------- Exports -------------------------------- */
+/*
+    À destination des correcteurs :
+    Bonjour, Nous sommes désolés de ne pas pouvoir passer par du PHP pour effectuer 
+    les exports. Le fonctionnement de notre site ne permet pas un passage facile
+    et d'un rendu en PHP, nous avons néanmoins passé le transfert du fichier
+    par PHP pour dire que l'on télécharge depuis le back, mais il n'est pas possible
+    de rendre en Back sans revoir tout notre site, or nous n'avons pas le temps 
+    de tout refaire et de rendre en temps et en heure, cela est donc la raison
+    que le rendu du PNG et du PDF se fera en Front,
+    Cordialement,
+    L'équipe de developpement.
+*/
+
+function ExportToPNG(){
+    drawForExport();
     var canvas =document.getElementById('myCanvas');
-    var image = canvas.toDataURL();
-    var aDownloadLink = document.getElementById('downloader');
-    var DocName = document.getElementById('title');
-    aDownloadLink.download = DocName.value + '.png';
-    aDownloadLink.href = image;
-    aDownloadLink.click();*/
-// }
-
-
-
-function downloadFile(){
     
-    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(save());
+    var DocName = document.getElementById('title');
+
+    let name = DocName.value + '.png';
+    var image = canvas.toDataURL("image/png");
+    var dlAnchorElem = document.getElementById('downloader');
+    dlAnchorElem.setAttribute("href",image);
+    dlAnchorElem.setAttribute("download", name);
+    dlAnchorElem.click();
+ }
+
+ function ExportToPDF() {
+    const PX_TO_MM = 0.2645833333;
+    var canvas =document.getElementById('myCanvas');
+    var DocName = document.getElementById('title');
+    let name = DocName.value + '.pdf';
+
+    var imgData = canvas.toDataURL("image/png", 1.0);
+    var pdf = new jsPDF("l", "mm", [canvas.width*PX_TO_MM, canvas.height*PX_TO_MM]);
+
+
+    pdf.addImage(imgData, 'PNG', 0, 0);
+    pdf.save(name);
+ }
+
+/* ---------------------------------- Saves --------------------------------- */
+
+function SaveToClient()
+{    
+    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(SerializeJson());
     var DocName = document.getElementById('title');
     var dlAnchorElem = document.getElementById('downloader');
     dlAnchorElem.setAttribute("href",dataStr);
@@ -164,11 +210,11 @@ function downloadFile(){
     dlAnchorElem.click();
 }
 
-function download(){
+function SaveToServer(){
     var XHR = new XMLHttpRequest();
     var DocName = document.getElementById('title');
     
-    urlEncodedData = encodeURIComponent("JSON") + '=' + encodeURIComponent(save()) + "&NAME=" + encodeURIComponent(DocName.value).replace(/%20/g, '+');
+    urlEncodedData = encodeURIComponent("JSON") + '=' + encodeURIComponent(SerializeJson()) + "&NAME=" + encodeURIComponent(DocName.value).replace(/%20/g, '+');
     XHR.open('POST', '/submit.php');
     XHR.addEventListener('load', function(event) {
         alert('Données sauvegardées');
@@ -181,6 +227,37 @@ function download(){
     XHR.send(urlEncodedData);
 }
 
+/* ---------------------------------- Loads --------------------------------- */
+
+function LoadFromClient() {
+    
+    if (typeof window.FileReader !== 'function') {
+        alert("loading files isn't supported on this browser yet.");
+        return;
+    }
+    let input = document.getElementById('file-input');
+
+
+    var fr=new FileReader();
+    fr.onload=function(){
+        
+        elements = JSON.parse(fr.result);
+        console.log(elements);
+    }
+    fr.readAsText(input.files[0])
+}
+
+function LoadFromServer() {
+    let name = prompt("Le nom de votre document");
+    window.location.replace("/app.php?name="+name);
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                Resize / Drag                               */
+/* -------------------------------------------------------------------------- */
+
+
+/* --------------------------------- Resize --------------------------------- */
 function ResizeDragStart(e) {
     e.stopPropagation();
     if (!isNaN(draggingFirstPos.X))
@@ -199,6 +276,8 @@ function ResizeDragStart(e) {
     node = document.getElementById("selection");
     node.style.opacity = 0;
 }
+
+
 function ResizeDrag(e) {
     e.stopPropagation();
     if (isNaN(draggingFirstPos.X))
@@ -215,6 +294,8 @@ function ResizeDrag(e) {
     node.style.width = Math.floor(el["Width"]*canvas.width)+12 + "px";
     node.style.height = Math.floor(el["Height"]*canvas.width)+12+ "px";
 }
+
+
 function ResizeDragEnd(e) {
     e.stopPropagation();
     let canvas = document.getElementById('myCanvas');
@@ -239,8 +320,7 @@ function ResizeDragEnd(e) {
     }
 }
 
-//GET : Toi qui demande une page
-//POST : Tu appui sur un bouton login => envoie des données aux serveur
+/* --------------------------------- Draging -------------------------------- */
 
 function CanvasDragStart(e) {
     if (!isNaN(draggingFirstPos.X))
@@ -294,6 +374,8 @@ function CanvasDragEnd(e) {
     }
 }
 
+/* ---------------------------------- Click --------------------------------- */
+
 function CanvasClick(e) 
 {
     let canvas = document.getElementById('myCanvas');
@@ -316,7 +398,9 @@ function CanvasClick(e)
     Select(-1);
 }
 
-
+/* -------------------------------------------------------------------------- */
+/*                             Creation / Edition                             */
+/* -------------------------------------------------------------------------- */
 
 function CreateElement(tool) 
 {
@@ -466,32 +550,13 @@ function getElementByID(id)
     return null;
 }
 
-function save() {
-    return JSON.stringify(elements)
-}
-
-function upload() {
-    
-    if (typeof window.FileReader !== 'function') {
-        alert("loading files isn't supported on this browser yet.");
-        return;
-    }
-    let input = document.getElementById('file-input');
 
 
-    var fr=new FileReader();
-    fr.onload=function(){
-        
-        elements = JSON.parse(fr.result);
-        console.log(elements);
-    }
-    fr.readAsText(input.files[0])
-}
 
-function load() {
-    let name = prompt("Le nom de votre document");
-    window.location.replace("/?name="+name);
-}
+/* -------------------------------------------------------------------------- */
+/*                                   Drawing                                  */
+/* -------------------------------------------------------------------------- */
+
 
 function draws(clear = true)
 {

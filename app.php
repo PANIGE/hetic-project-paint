@@ -1,6 +1,17 @@
 <?php
 require_once("include/SQL.php");
-$json = "[]";
+$json = '[
+   {
+       "ID":1,
+       "Type":1,
+       "X":-1,
+       "Y":-1,
+       "Height":0.2,
+       "Width":0.2,
+       "PrimaryColor":"#F0F",
+       "SecondaryColor":"#0F0",
+   },
+]';
 $name = "Sans-Titre";
 if (isset($_GET['name'])) {
    $name = $_GET['name']; 
@@ -29,21 +40,12 @@ if (isset($_GET['name'])) {
       <link href="storage/main.css" rel="stylesheet">
       <script src="https://kit.fontawesome.com/cc08db76b3.js" crossorigin="anonymous"></script>
       <script src="storage/script.js"></script>
+      <script src="//cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.3/jspdf.min.js"></script>
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>BETTER THAN PAINT</title>
    </head>
    <body>
-
-      <!-- <div class="home page">
-         <div class="intro">
-         <h1 class="project-name">
-            <span class="letter">B</span><span class="letter">ETTER</br></span> <span class="letter">T</span><span class="letter">HAN </span> <span class="letter">P</span><span class="letter">AINT</span>
-         </h1>
-         <img src="https://cdn-icons-png.flaticon.com/512/815/815546.png" id="pic" alt="logo">
-         </div>
-      </div> -->
-
       <div class="title">
          <h1 class="main-title"><span>B</span>ETTER <span>T</span>HAN <span>P</span>AINT</h1>
       </div>
@@ -53,34 +55,35 @@ if (isset($_GET['name'])) {
          </div>
          <div class="wrapper">
             <div class="header-secondary">
-                <div title="Download the file locally">
-                    <button id="circle" onclick="downloadFile()">
-                    <i class="fas fa-download"></i>
-                    </button> 
-                </div>
-                <div title="Save file to the server (Be sure to remember the name !)">
-                    <button id="circle" onclick="download()" >
-                    <i class="fas fa-save"></i>
-                    </button> 
-                </div>
-                <div title="Download file locally">
-                   <button id="circle" id="import" onclick="load()">
-                   <i class="fas fa-cloud-download-alt"></i>
-                  </button>
-                </div>
-                <div title="Get a file locally">
+               <div title="Load a file from your PC">
                    <button id="circle" onclick="document.getElementById('file-input').click();">
                    <i class="fas fa-cloud-upload-alt"></i>
                       <input id="file-input" type="file" name="file" style="display: none;" />
                      </button>
                 </div>
+                <div title="Download the file locally">
+                    <button id="circle" onclick="SaveToClient()">
+                    <i class="fas fa-download"></i>
+                    </button> 
+                </div>
+                <div title="Save file to the server (Be sure to remember the name !)">
+                    <button id="circle" onclick="SaveToServer()" >
+                    <i class="fas fa-save"></i>
+                    </button> 
+                </div>
+                <div title="Load a distant file">
+                   <button id="circle" id="import" onclick="LoadFromServer()">
+                   <i class="fas fa-cloud-download-alt"></i>
+                  </button>
+                </div>
+
                 <div title="Export to PNG">
-                   <button id="circle" >
+                   <button id="circle" onclick=ExportToPNG() >
                      <i class="fas fa-file-image"></i>
                    </button>
                 </div>
                 <div  title="Export to PDF">
-                   <button id="circle" >
+                   <button id="circle" onclick=ExportToPDF() >
                      <i class="fas fa-file-pdf"></i>
                    </button>
                 </div>
