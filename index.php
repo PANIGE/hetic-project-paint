@@ -34,6 +34,16 @@ if (isset($_GET['name'])) {
       <title>BETTER THAN PAINT</title>
    </head>
    <body>
+
+      <!-- <div class="home page">
+         <div class="intro">
+         <h1 class="project-name">
+            <span class="letter">B</span><span class="letter">ETTER</br></span> <span class="letter">T</span><span class="letter">HAN </span> <span class="letter">P</span><span class="letter">AINT</span>
+         </h1>
+         <img src="https://cdn-icons-png.flaticon.com/512/815/815546.png" id="pic" alt="logo">
+         </div>
+      </div> -->
+
       <div class="title">
          <h1 class="main-title"><span>B</span>ETTER <span>T</span>HAN <span>P</span>AINT</h1>
       </div>

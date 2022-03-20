@@ -565,5 +565,18 @@ function draws(clear = true)
 
 }
 
+/* on doit importer html2canvas
+    function png(){
+        var doc=getDocumentById(myCanvas)
+            html2canvas({
+                onRendered:function(canvas){
+                    var a = document.createElement('a')
+                    a.href=canvas.toDataURL("image/png")
+                    a.download=doc.value
+                    a.clik();
+                }
+            })
+        }
+*/
 
 
